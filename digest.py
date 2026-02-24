@@ -1,10 +1,14 @@
 import requests, os
+from datetime import datetime
 
 PERPLEXITY_KEY = os.environ["PERPLEXITY_KEY"]
 RESEND_KEY = os.environ["RESEND_KEY"]
 TO_EMAIL = os.environ["TO_EMAIL"]
 
 def fetch_digest():
+    is_monday = datetime.today().weekday() == 0
+    time_range = "the last 3 days (Saturday and Sunday)" if is_monday else "the last 24 hours"
+
     response = requests.post(
         "https://api.perplexity.ai/chat/completions",
         headers={"Authorization": f"Bearer {PERPLEXITY_KEY}"},
@@ -18,8 +22,8 @@ def fetch_digest():
                 {
                     "role": "user",
                     "content": (
-                        "Search the web and summarize the most important developments "
-                        "from the last 24 hours on:\n"
+                        f"Search the web and summarize the most important developments "
+                        f"from {time_range} on:\n"
                         "1. Agentic programming (frameworks, models, SDKs, open-source releases)\n"
                         "2. AI cybersecurity (threats, tools, research, incidents)\n\n"
                         "Format as HTML with two sections, bullet points, "
@@ -36,7 +40,7 @@ def send_email(html_body):
         "https://api.resend.com/emails",
         headers={"Authorization": f"Bearer {RESEND_KEY}"},
         json={
-            "from": "digest@yourdomain.com",
+            "from": "noreply@agentic-ai-news.dev",
             "to": TO_EMAIL,
             "subject": "Daily AI Digest",
             "html": html_body
