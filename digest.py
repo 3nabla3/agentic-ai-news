@@ -40,7 +40,7 @@ def send_email(html_body):
         "https://api.resend.com/emails",
         headers={"Authorization": f"Bearer {RESEND_KEY}"},
         json={
-            "from": "noreply@agentic-ai-news.dev",
+            "from": "onboarding@resend.dev",
             "to": TO_EMAIL,
             "subject": "Daily AI Digest",
             "html": html_body
