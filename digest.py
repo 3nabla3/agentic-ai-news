@@ -33,6 +33,7 @@ def fetch_digest():
             ]
         }
     )
+    response.raise_for_status()
     content = response.json()["choices"][0]["message"]["content"]
     content = content.strip()
     if content.startswith("```html"):
@@ -44,7 +45,7 @@ def fetch_digest():
     return content.strip()
 
 def send_email(html_body):
-    requests.post(
+    response = requests.post(
         "https://api.resend.com/emails",
         headers={"Authorization": f"Bearer {RESEND_KEY}"},
         json={
@@ -54,6 +55,7 @@ def send_email(html_body):
             "html": html_body
         }
     )
+    response.raise_for_status()
 
 if __name__ == "__main__":
     digest = fetch_digest()
