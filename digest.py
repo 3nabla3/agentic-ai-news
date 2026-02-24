@@ -33,7 +33,15 @@ def fetch_digest():
             ]
         }
     )
-    return response.json()["choices"][0]["message"]["content"]
+    content = response.json()["choices"][0]["message"]["content"]
+    content = content.strip()
+    if content.startswith("```html"):
+        content = content[7:]
+    elif content.startswith("```"):
+        content = content[3:]
+    if content.endswith("```"):
+        content = content[:-3]
+    return content.strip()
 
 def send_email(html_body):
     requests.post(
