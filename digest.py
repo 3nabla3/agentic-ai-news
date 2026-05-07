@@ -38,7 +38,7 @@ def _call_perplexity(time_range):
         "https://api.perplexity.ai/chat/completions",
         headers={"Authorization": f"Bearer {PERPLEXITY_KEY}"},
         json={
-            "model": "sonar",
+            "model": "sonar-pro",
             "messages": [
                 {
                     "role": "system",
