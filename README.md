@@ -1,14 +1,14 @@
 # agentic-ai-news
 
-A GitHub Actions pipeline that sends a daily email digest covering the latest developments in agentic programming and AI cybersecurity.
+A GitHub Actions pipeline that sends a weekly email digest covering the latest developments in agentic programming and AI cybersecurity.
 
 ## How it works
 
-Every weekday at 8am EST, the workflow:
-1. Queries the [Perplexity](https://www.perplexity.ai/) Sonar model to search the web and summarize the top 5 developments in each of two topics
+Every Tuesday at 6am EST, the workflow:
+1. Queries the [Perplexity](https://www.perplexity.ai/) Sonar model to search the web and summarize the top 5 week-over-week changes in each of two topics
 2. Sends the result as an HTML email via [Resend](https://resend.com/)
 
-On Mondays, the digest covers the last 3 days (Saturday and Sunday). On other weekdays, it covers the last 24 hours.
+The digest covers the last 7 days and focuses on what has changed in the industry since the previous week.
 
 ## Setup
 

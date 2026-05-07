@@ -1,8 +1,8 @@
-name: Daily AI Digest
+name: Weekly AI Digest
 
 on:
   schedule:
-    - cron: '0 11 * * 1-5'  # 6am EST, Mon-Fri
+    - cron: '0 11 * * 2'  # 6am EST, Tuesdays
   workflow_dispatch:          # lets you trigger it manually too
 
 jobs:

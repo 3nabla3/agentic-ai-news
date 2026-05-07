@@ -43,9 +43,12 @@ def _call_perplexity(time_range):
                 {
                     "role": "system",
                     "content": (
-                        "You are a research assistant that produces an HTML email digest. "
+                        "You are a research assistant that produces a weekly HTML email digest. "
                         "ALWAYS return valid HTML content with two sections and bullet points. "
                         "NEVER refuse or explain why you cannot answer. "
+                        "Focus on what has changed in the industry since the previous week — "
+                        "new releases, announcements, shifts in direction, notable incidents — "
+                        "rather than evergreen background. "
                         "If very recent results are sparse, include the most recent "
                         "relevant developments you can find."
                     )
@@ -54,9 +57,12 @@ def _call_perplexity(time_range):
                     "role": "user",
                     "content": (
                         f"Today is {today}. Search the web and summarize the most important "
-                        f"recent developments from roughly {time_range} on:\n"
+                        f"changes in the industry over {time_range} (i.e. since last week) on:\n"
                         "1. Agentic programming (frameworks, models, SDKs, open-source releases)\n"
                         "2. AI cybersecurity (threats, tools, research, incidents)\n\n"
+                        "Prioritize what is *new or different* compared to the prior week: "
+                        "version bumps, new entrants, policy or pricing shifts, benchmark results, "
+                        "fresh vulnerabilities or attacks. Skip items that are not week-over-week news.\n\n"
                         "Return ONLY raw HTML (no markdown, no code fences). "
                         "Use two <h2> sections with <ul> bullet points and "
                         "include <a href> source links. Max 5 items per section."
@@ -84,8 +90,7 @@ def _call_perplexity(time_range):
 
 
 def fetch_digest():
-    is_monday = datetime.today().weekday() == 0
-    time_range = "the last 3 days (Saturday and Sunday)" if is_monday else "the last 24 hours"
+    time_range = "the last 7 days"
     logger.info("Fetching digest for time range: %s", time_range)
 
     for attempt in range(1, MAX_RETRIES + 1):
@@ -104,7 +109,7 @@ def fetch_digest():
 
     # All retries returned refusals — broaden the time range and try once more
     logger.warning("All %d attempts refused. Retrying with broader time range.", MAX_RETRIES)
-    content = _call_perplexity("the last week")
+    content = _call_perplexity("the last 14 days")
 
     if _looks_like_refusal(content):
         raise RuntimeError(
@@ -123,7 +128,7 @@ def send_email(html_body):
         json={
             "from": "onboarding@resend.dev",
             "to": TO_EMAIL,
-            "subject": "Daily AI Digest",
+            "subject": "Weekly AI Digest",
             "html": html_body
         }
     )
@@ -132,7 +137,7 @@ def send_email(html_body):
     logger.info("Email sent successfully")
 
 if __name__ == "__main__":
-    logger.info("Starting daily AI digest pipeline")
+    logger.info("Starting weekly AI digest pipeline")
     digest = fetch_digest()
     send_email(digest)
     logger.info("Pipeline completed successfully")
